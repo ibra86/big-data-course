@@ -1,4 +1,0 @@
-colorlog
-PyYAML
-flake8
-requests
