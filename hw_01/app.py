@@ -1,6 +1,8 @@
 import json
 import os
 
+from requests import Timeout
+
 from client import Client
 from config import Config
 from constants import DATA_PATH
@@ -18,12 +20,15 @@ def save_data(data, path):
 
 def app(date):
     logger.info(f'app processing date={date}')
-    data = client.get_data(date)
-    if data:
-        dir_path = os.path.join(DATA_PATH, date)
-        file_path = os.path.join(dir_path, 'data.json')
-        os.makedirs(dir_path, exist_ok=True)
-        save_data(data, file_path)
+    try:
+        data = client.get_data(date)
+        if data:
+            dir_path = os.path.join(DATA_PATH, date)
+            file_path = os.path.join(dir_path, 'data.json')
+            os.makedirs(dir_path, exist_ok=True)
+            save_data(data, file_path)
+    except Timeout:
+        logger.info(f'the request timed out for date={date}')
 
 
 if __name__ == '__main__':

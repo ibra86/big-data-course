@@ -19,7 +19,7 @@ class Client:
         endpoint = self.config.get('auth', {}).get('endpoint')
         payload = self.config.get('auth', {}).get('payload')
         auth_url = self.url + endpoint
-        res = requests.post(url=auth_url, json=payload, headers=self.header)
+        res = requests.post(url=auth_url, json=payload, headers=self.header, timeout=10)
         token = res.json().get('access_token')
         self.header['Authorization'] = f'JWT {token}'
 
@@ -28,11 +28,11 @@ class Client:
         payload = {'date': f'{date}'}
         data_url = self.url + endpoint
 
-        res = requests.get(url=data_url, json=payload, headers=self.header)
+        res = requests.get(url=data_url, json=payload, headers=self.header, timeout=10)
 
         if res.status_code == 401:
             self._auth_header()
-            res = requests.get(url=data_url, json=payload, headers=self.header)
+            res = requests.get(url=data_url, json=payload, headers=self.header, timeout=10)
 
         if res.status_code == 200:
             return res.json()
